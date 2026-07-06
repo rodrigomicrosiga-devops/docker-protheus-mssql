@@ -1,0 +1,25 @@
+networks:
+  protheus_network:
+    name: protheus_backend_net
+    driver: bridge
+
+volumes:
+  mssql_data:
+    name: protheus_mssql_volume
+
+services:
+  protheus_mssql:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: protheus_mssql
+    restart: always
+    networks:
+      - protheus_network
+    ports:
+      - "${MSSQL_PORT}:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+    volumes:
+      - mssql_data:/var/opt/mssql
