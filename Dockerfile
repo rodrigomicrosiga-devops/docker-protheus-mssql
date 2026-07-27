@@ -18,4 +18,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 # Retorna para o usuário padrão do SQL Server para execução segura
 USER mssql
 
+# mssql-tools18 já vem na imagem base -- checa se o motor está de fato
+# aceitando conexões, não só se o processo está de pé.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -Q "SELECT 1" -C -No || exit 1
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
