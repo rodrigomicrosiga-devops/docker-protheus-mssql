@@ -1,4 +1,7 @@
-FROM mcr.microsoft.com/mssql/server:2025-latest
+# Pinado em vez de :2025-latest -- tag mutável, o build silenciosamente puxaria uma
+# imagem base diferente a cada nova Cumulative Update lançada pela Microsoft. CU7 é
+# o que :2025-latest resolvia no momento da fixação (mesmo digest, conferido via MCR).
+FROM mcr.microsoft.com/mssql/server:2025-CU7-ubuntu-24.04
 
 USER root
 

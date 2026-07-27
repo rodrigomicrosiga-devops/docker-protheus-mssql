@@ -58,3 +58,7 @@ Certifique-se de que o arquivo oculto `.env.mssql` esteja configurado localmente
 # Construção local da imagem baseada no SQL Server 2025 e execução em background
 docker compose --env-file .env.mssql up --build -d
 ```
+
+### 🔒 Imagem Base Fixada
+
+O `Dockerfile` usa `mcr.microsoft.com/mssql/server:2025-CU7-ubuntu-24.04` em vez de `:2025-latest`. Tags `-latest` são móveis — a cada nova Cumulative Update lançada pela Microsoft, o mesmo nome de tag passaria a apontar para uma imagem base diferente, sem aviso, tornando o build não-reprodutível. `CU7` foi fixada por ser exatamente o que `:2025-latest` resolvia no momento da mudança (mesmo digest, conferido via `mcr.microsoft.com/v2/mssql/server/manifests/...`). Para atualizar deliberadamente para uma CU mais nova no futuro, troque a tag manualmente após conferir o [changelog de releases do SQL Server 2025](https://mcr.microsoft.com/en-us/product/mssql/server/tags).
