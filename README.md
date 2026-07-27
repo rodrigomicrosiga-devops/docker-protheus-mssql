@@ -62,3 +62,15 @@ docker compose --env-file .env.mssql up --build -d
 ### 🔒 Imagem Base Fixada
 
 O `Dockerfile` usa `mcr.microsoft.com/mssql/server:2025-CU7-ubuntu-24.04` em vez de `:2025-latest`. Tags `-latest` são móveis — a cada nova Cumulative Update lançada pela Microsoft, o mesmo nome de tag passaria a apontar para uma imagem base diferente, sem aviso, tornando o build não-reprodutível. `CU7` foi fixada por ser exatamente o que `:2025-latest` resolvia no momento da mudança (mesmo digest, conferido via `mcr.microsoft.com/v2/mssql/server/manifests/...`). Para atualizar deliberadamente para uma CU mais nova no futuro, troque a tag manualmente após conferir o [changelog de releases do SQL Server 2025](https://mcr.microsoft.com/en-us/product/mssql/server/tags).
+
+### ⚙️ CI/CD
+
+Este repositório passou a ter pipeline de build/push automatizado (`.github/workflows/docker-publish.yml`), rodando no runner self-hosted da organização a cada push em `main`/`develop`. Antes disso, a imagem só era construída manualmente via `docker compose up --build`.
+
+### 🏷️ Rastreabilidade de Build
+
+A tag da imagem publicada permanece fixa (`2025-CU7`, espelhando a CU do SQL Server pinada no `Dockerfile`) entre builds. Para rastrear qual commit gerou um build específico sem depender da tag, o pipeline grava o label `org.opencontainers.image.revision` com o SHA do commit em toda imagem publicada:
+
+```bash
+docker inspect --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}' rodrigomicrosiga/mssql-dev:2025-CU7
+```
