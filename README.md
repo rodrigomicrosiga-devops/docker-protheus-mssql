@@ -65,7 +65,7 @@ O `Dockerfile` usa `mcr.microsoft.com/mssql/server:2025-CU7-ubuntu-24.04` em vez
 
 ### ⚙️ CI/CD
 
-Este repositório passou a ter pipeline de build/push automatizado (`.github/workflows/docker-publish.yml`), rodando no runner self-hosted da organização a cada push em `main`/`develop`. Antes disso, a imagem só era construída manualmente via `docker compose up --build`.
+Esta é a única imagem da frota que **não** passa pelo construtor central (`protheus-catalog`), porque não depende de nenhum artefato TOTVS: o `.github/workflows/docker-publish.yml` daqui é **manual** (`workflow_dispatch`). Um push não publica nada.
 
 ### 🏷️ Rastreabilidade de Build
 
